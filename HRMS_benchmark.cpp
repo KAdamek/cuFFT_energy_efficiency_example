@@ -30,7 +30,7 @@ void Generate_signal_noise(float2 *h_input, int nElements, int nSeries){
 
 
 
-int Calculate_GPU_HRMS(float2 *h_input, float *h_output, Performance_results *HRMS_results);
+int Calculate_GPU_HRMS(float2 *h_input, float *h_output, Performance_results *HRMS_results, int device);
 
 int main(int argc, char* argv[]) {
 	
@@ -73,7 +73,7 @@ int main(int argc, char* argv[]) {
 	
 	Generate_signal_noise(h_input, nElements, nSeries);
 	
-	Calculate_GPU_HRMS(h_input, h_output, &HRMS_results);
+	Calculate_GPU_HRMS(h_input, h_output, &HRMS_results, device);
 	
 	delete [] h_input;
 	delete [] h_output;
