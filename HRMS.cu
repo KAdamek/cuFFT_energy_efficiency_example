@@ -155,6 +155,8 @@ double stdev(std::vector<double> *times, double mean_time){
 // ***********************************************************************************
 
 int Calculate_GPU_HRMS(float2 *h_input, float *h_output, Performance_results *HRMS_results, int device){
+	Initiate_device(device);
+	
 	int nElements  = HRMS_results->nElements;
 	int nHarmonics = HRMS_results->nHarmonics;
 	int nSeries    = HRMS_results->nSeries;
@@ -162,10 +164,9 @@ int Calculate_GPU_HRMS(float2 *h_input, float *h_output, Performance_results *HR
 	size_t input_size = nElements*nSeries*sizeof(float2);
 	size_t power_size = nElements*nSeries*sizeof(float);
 	size_t output_size = nElements*nSeries;
+	
 	GpuTimer timer, total_timer;
 	total_timer.Start();
-	
-	Initiate_device(device);
 	
 	float2 *d_input;
 	float *d_power;
