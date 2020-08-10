@@ -7,7 +7,7 @@ nvmlReturn_t nvmlResult;
 nvmlDevice_t nvmlDeviceID;
 char deviceNameStr[128];
 
-void nvml_setup(){
+void nvml_setup(int device){
 
 	// run the nvml Init phase
 	nvmlResult = nvmlInit();
@@ -17,7 +17,7 @@ void nvml_setup(){
         }
 
 	// get the Device ID string for NVML
-	nvmlResult =  nvmlDeviceGetHandleByIndex(0, &nvmlDeviceID);
+	nvmlResult =  nvmlDeviceGetHandleByIndex(device, &nvmlDeviceID);
 	if (NVML_SUCCESS != nvmlResult){
                 printf("NVML get Device ID fail: %s\n", nvmlErrorString(nvmlResult));
                 exit(0);

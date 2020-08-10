@@ -209,7 +209,7 @@ int Calculate_GPU_HRMS(float2 *h_input, float *h_output, Performance_results *HR
 	cuFFT_error = cufftPlan1d(&plan, nElements, CUFFT_C2C, nSeries);
 	double FFT_execution_time = 0;
 	if (CUFFT_SUCCESS == cuFFT_error) {
-		nvml_setup();
+		nvml_setup(device);
 		for(int f=0; f<nRuns; f++){
 			timer.Start();
 			cufftExecC2C(plan, (cufftComplex *) d_input, (cufftComplex *) d_input, CUFFT_FORWARD);
