@@ -3,7 +3,7 @@
 
 #include <nvml.h>
 
-void nvml_setup();
+void nvml_setup(int device);
 void nvml_reset();
 
 unsigned int assign_clock(char *deviceName);
