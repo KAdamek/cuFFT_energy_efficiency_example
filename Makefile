@@ -1,5 +1,5 @@
 INC := -I${CUDA_HOME}/include
-LIB := -L${CUDA_HOME}/lib64 -lcudart -lcuda -lcufft -L. -lMSDGPU
+LIB := -L${CUDA_HOME}/lib64 -lcudart -lcuda -lcufft -L. -lMSDGPU -lnvidia-ml
 
 # use this compilers
 # g++ just because the file write
@@ -23,12 +23,15 @@ endif
 
 all: clean msdlib analyze
 
-analyze: HRMS_benchmark.o HRMS.o Makefile
-	$(NVCC) -o $(ANALYZE) HRMS_benchmark.o HRMS.o $(LIB) $(NVCCFLAGS) 
+analyze: HRMS_benchmark.o HRMS.o nvml_run.o Makefile
+	$(NVCC) -o $(ANALYZE) nvml_run.o HRMS_benchmark.o HRMS.o $(LIB) $(NVCCFLAGS) 
 
 HRMS.o: timer.h utils_cuda.h
 	$(NVCC) -c HRMS.cu $(NVCCFLAGS)
-	
+
+nvml_run.o: nvml_run.h
+	$(NVCC) -c nvml_run.cu $(NVCCFLAGS)	
+
 HRMS_benchmark.o: HRMS_benchmark.cpp
 	$(GCC) -c HRMS_benchmark.cpp $(GCC_OPTS)
 
