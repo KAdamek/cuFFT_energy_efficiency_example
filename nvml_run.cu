@@ -56,6 +56,12 @@ void nvml_reset(){
                 exit(0);
         }
 
+	nvmlResult = nvmlShutdown();
+	if (NVML_SUCCESS != nvmlResult){
+                printf("NVML shutdown fail: %s\n", nvmlErrorString(nvmlResult));
+                exit(0);
+        }
+
 }
 
 // function to set the near optimal frequency by device Name
