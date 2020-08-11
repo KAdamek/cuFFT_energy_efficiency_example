@@ -13,6 +13,7 @@ FREQ_MEM=877
 TYPE=C2C
 ID=V100
 PREC=d
+CORE_CLOCK=255
 
 #for LENGTH in 32 64 128 256 512 1024 2048 4096 8192 16384 32768 65536 131072 262144 524288 1048576 2097152
 #for LENGTH in 25 27 49 81 121 232 243 343 625 729 1331 2187 2401 3125 6561 14641 16807 19683 59049 117649 161051 531441 823543 1771561 139 19321 2685619
@@ -36,7 +37,7 @@ printf "${RED}------ Running the ${HARM} ------${NC}\n"
 #	nvidia-smi -i $CARD -ac $FREQ_MEM,$CORE_MEM
 	TIMESTAMP=$(date +"%Y/%m/%d %H:%M:%S.%3N")
 #	nvprof --print-gpu-trace -u ms --csv ../cuFFT_benchmark.exe ${LENGTH} 0 0 -2 200 ${PREC} ${TYPE} ${CARD} 2>out.nvprof
-	nvprof --print-gpu-trace -u ms --csv ../HRMS_benchmark.exe 500000 8 1024 1 ${CARD} 2>out.nvprof
+	nvprof --print-gpu-trace -u ms --csv ../HRMS_benchmark.exe 500000 8 1024 1 ${CORE_CLOCK} ${CARD} 2>out.nvprof
 	START_LINE=$[$(awk '/Start/{ print NR; exit }' out.nvprof) + 2]
 	#in csv mode there is no line with Regs
 	#	END_LINE=$[$(awk '/Regs:/{ print NR; exit }' out.nvprof) - 3]
