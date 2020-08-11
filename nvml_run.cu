@@ -7,7 +7,7 @@ nvmlReturn_t nvmlResult;
 nvmlDevice_t nvmlDeviceID;
 char deviceNameStr[128];
 
-void nvml_setup(int device){
+void nvml_setup(int device, int core_clock){
 
 	// run the nvml Init phase
 	nvmlResult = nvmlInit();
@@ -32,7 +32,7 @@ void nvml_setup(int device){
 
 	//set the desired min and max GPU clock
 	unsigned int gpu_clock;
-	gpu_clock = assign_clock(deviceNameStr);
+	gpu_clock = (unsigned int)(core_clock); //assign_clock(deviceNameStr);
 	nvmlResult = nvmlDeviceSetGpuLockedClocks(nvmlDeviceID, gpu_clock, gpu_clock);
 	if (NVML_SUCCESS != nvmlResult){
                 printf("NVML set GPU clock fail: %s\n", nvmlErrorString(nvmlResult));
