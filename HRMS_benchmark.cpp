@@ -30,17 +30,18 @@ void Generate_signal_noise(float2 *h_input, int nElements, int nSeries){
 
 
 
-int Calculate_GPU_HRMS(float2 *h_input, float *h_output, Performance_results *HRMS_results, int device);
+int Calculate_GPU_HRMS(float2 *h_input, float *h_output, Performance_results *HRMS_results, int device, int core_clock);
 
 int main(int argc, char* argv[]) {
 	
-	if(argc!=6) {
+	if(argc!=7) {
 		printf("Argument error!\n");
 		printf("1) Length of the time series\n");
 		printf("2) Number of harmonics summed\n");
 		printf("3) Number of time-series to process\n");
 		printf("4) Number of runs of the kernel\n");
-		printf("5) Device id\n");
+		printf("5) Core clock frequency (0 -> default; >0 -> set to given number);\n");
+		printf("6) Device id\n");
         return (1);
     }
 	char * pEnd;
@@ -49,7 +50,8 @@ int main(int argc, char* argv[]) {
 	int nHarmonics = strtol(argv[2],&pEnd,10);
 	int nSeries = strtol(argv[3],&pEnd,10);
 	int nRuns = strtol(argv[4],&pEnd,10);
-	int device = strtol(argv[5],&pEnd,10);
+	int core_clock = strtol(argv[5],&pEnd,10);
+	int device = strtol(argv[6],&pEnd,10);
 	
 	if(DEBUG){
 		printf("----------- DEBUG -----------\n");
@@ -58,6 +60,12 @@ int main(int argc, char* argv[]) {
 		printf("Number of harmonics summed = %d;\n", nHarmonics);
 		printf("Number of series to process = %d;\n", nSeries);
 		printf("Number of runs: %d;\n", nRuns);
+		if (core_clock > 0){
+			printf("Set the core clock frequency to: %d;\n", core_clock);
+		} 
+		else {
+			printf("Set the core clock frequency to default;\n");
+		}
 		printf("Device: %d;\n", device);
 		printf("-----------------------------<\n");
 	}
@@ -73,7 +81,7 @@ int main(int argc, char* argv[]) {
 	
 	Generate_signal_noise(h_input, nElements, nSeries);
 	
-	Calculate_GPU_HRMS(h_input, h_output, &HRMS_results, device);
+	Calculate_GPU_HRMS(h_input, h_output, &HRMS_results, device, core_clock);
 	
 	delete [] h_input;
 	delete [] h_output;

@@ -18,6 +18,8 @@
 #include "results.h"
 #include "MSD_GPU_library.h"
 
+#include "nvml_run.h"
+
 #define PHS_NTHREADS 64
 #define CT_CORNER_BLOCKS 1
 #define CT_ROWS_PER_WARP 2
@@ -154,7 +156,7 @@ double stdev(std::vector<double> *times, double mean_time){
 // ***********************************************************************************
 // ***********************************************************************************
 
-int Calculate_GPU_HRMS(float2 *h_input, float *h_output, Performance_results *HRMS_results, int device){
+int Calculate_GPU_HRMS(float2 *h_input, float *h_output, Performance_results *HRMS_results, int device, int core_clock){
 	Initiate_device(device);
 	
 	int nElements  = HRMS_results->nElements;
@@ -207,12 +209,16 @@ int Calculate_GPU_HRMS(float2 *h_input, float *h_output, Performance_results *HR
 	cuFFT_error = cufftPlan1d(&plan, nElements, CUFFT_C2C, nSeries);
 	double FFT_execution_time = 0;
 	if (CUFFT_SUCCESS == cuFFT_error) {
+		if (core_clock >0) nvml_setup(device, core_clock);
 		for(int f=0; f<nRuns; f++){
 			timer.Start();
 			cufftExecC2C(plan, (cufftComplex *) d_input, (cufftComplex *) d_input, CUFFT_FORWARD);
 			timer.Stop();
 			FFT_execution_time += timer.Elapsed();
 		}
+		// stop before reset to default; kernel call is async
+		cudaDeviceSynchronize();
+		if (core_clock > 0) nvml_reset();
 		FFT_execution_time = FFT_execution_time/((double) nRuns);
 		HRMS_results->GPU_FFT_time = FFT_execution_time;
 	}
